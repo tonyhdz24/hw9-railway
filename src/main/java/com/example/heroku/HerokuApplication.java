@@ -33,18 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
-public static String getRandomString(int length) {
-  String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  StringBuilder sb = new StringBuilder();
-  Random random = new Random();
 
-  for (int i = 0; i < length; i++) {
-      int randomIndex = random.nextInt(characters.length());
-      sb.append(characters.charAt(randomIndex));
-  }
-
-  return sb.toString();
-}
 @Controller
 @SpringBootApplication
 public class HerokuApplication {
@@ -58,7 +47,6 @@ public class HerokuApplication {
   public static void main(String[] args) throws Exception {
     SpringApplication.run(HerokuApplication.class, args);
   }
-          
 
   @RequestMapping("/")
   String index() {
@@ -69,10 +57,10 @@ public class HerokuApplication {
   String db(Map<String, Object> model) {
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS table_timestamp_and_random_string (tick timestamp, random_string varchar(30))");
+      stmt.executeUpdate(
+          "CREATE TABLE IF NOT EXISTS table_timestamp_and_random_string (tick timestamp, random_string varchar(30))");
       stmt.executeUpdate("INSERT INTO table_timestamp_and_random_string VALUES (now(), '" + getRandomString() + "')");
-      ResultSet rs = stmt.executeQuery("SELECT tick FROM table_timestamp_and_random_string");
-
+      ResultSet rs = stmt.executeQuery("SELECT tick, random_string FROM table_timestamp_and_random_string");
       ArrayList<String> output = new ArrayList<String>();
       while (rs.next()) {
         output.add("Read from DB: " + rs.getTimestamp("tick"));
@@ -97,4 +85,14 @@ public class HerokuApplication {
     }
   }
 
+}
+private String getRandomString() {
+  int length = 10; // Specify the length of the random string
+  String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  StringBuilder randomString = new StringBuilder();
+  for (int i = 0; i < length; i++) {
+      int index = (int) (characters.length() * Math.random());
+      randomString.append(characters.charAt(index));
+  }
+  return randomString.toString();
 }
