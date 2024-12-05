@@ -73,6 +73,7 @@ public class HerokuApplication {
       model.put("message", e.getMessage());
       return "error";
     }
+    System.out.println("Print statement from with in db() ANTONIO HERNANDEZ");
   }
 
   @Bean
