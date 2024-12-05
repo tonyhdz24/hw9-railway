@@ -84,14 +84,14 @@ public class HerokuApplication {
       return new HikariDataSource(config);
     }
   }
-  private String getRandomString() {
- 
 
+  private String getRandomString() {
+    int length = 10; // Specify the length of the random string
     String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     StringBuilder randomString = new StringBuilder();
     for (int i = 0; i < length; i++) {
-        int index = (int) (characters.length() * Math.random());
-        randomString.append(characters.charAt(index));
+      int index = (int) (characters.length() * Math.random());
+      randomString.append(characters.charAt(index));
     }
     return randomString.toString();
   }
